@@ -1,6 +1,9 @@
 const gameBoard = (function () {
-    const board = new Array(9);
-
+    const board = [];
+    for (let x = 0; x < 10; x++) {
+        board.push("empty");
+    }
+    
     const topRow = [board[0], board[1], board[2]];
     const midRow = [board[3], board[4], board[5]];
     const botRow = [board[6], board[7], board[8]];
@@ -21,13 +24,25 @@ const gameBoard = (function () {
         console.log(botRow);
     }
 
- //   const checkWin = () => {
-   //     potentialThreesInARow.forEach(x => {
-     //       
-       // });
-    //}
+    const changeBoard = (player, x) => {
+        if (player.isTurn) {
+            board[x] = player.symbol;
+            player.isTurn = false;
+        }
+        else console.log(`It isn't your turn yet, ${player.name}!`);
+    }
 
-    return { displayBoard }
+    const checkWin = () => {
+        //for each possible winning row...
+        potentialThreesInARow.forEach(x => {
+            //check each cell of that row
+            x.forEach(x => {
+                if (x == "X" || x == "O");
+            });
+        });
+    }
+
+    return { displayBoard, changeBoard, checkWin}
 })();
 
 const displayController = (function () {
@@ -35,13 +50,23 @@ const displayController = (function () {
 })();
 
 //add parameter to choose X or O?
-function player (name, symbol, isWinner) {
-    return { name, symbol, isWinner};
+function player (name, symbol, isWinner = false, isTurn = true) {
+    const mark = (x) => {
+        if(isTurn) {
+            gameBoard.board[x] = symbol;
+            isTurn = false
+        }
+        else console.log(`It isn't your turn yet, ${name}!`);
+    }
+    return { name, symbol, isWinner, isTurn, mark};
 } 
 
-const player1 = player("Player", "X");
+const player1 = player("Bob", "X");
 const npc = player("NPC", "O");
 
 console.log(player1);
 console.log(npc);
 gameBoard.displayBoard();
+gameBoard.changeBoard(player1, 0);
+gameBoard.changeBoard(npc, 1);
+gameBoard.changeBoard(player1, 2);
