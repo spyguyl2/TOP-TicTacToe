@@ -3,7 +3,7 @@ const gameBoard = (function () {
     for (let x = 0; x < 10; x++) {
         board.push("empty");
     }
-    //#region Arrays of rows/cols/diagonals
+
     let topRow = [board[0], board[1], board[2]];
     let midRow = [board[3], board[4], board[5]];
     let botRow = [board[6], board[7], board[8]];
@@ -13,9 +13,15 @@ const gameBoard = (function () {
     let rightCol = [board[2], board[5], board[8]];
 
     let diag1 = [board[0], board[4], board[8]];
-    let diag2 = [board[2], board[4], board[6]];
-//#endregion
-    
+    let diag2 = [board[2], board[4], board[6]];    
+
+    const resetBoard = () => {
+        board.forEach (i => {
+            board[i] = "empty"
+        });
+        updateBoard();
+        displayBoard();
+    }
 
     const updateBoard = () => {
         topRow = [board[0], board[1], board[2]];
@@ -67,7 +73,12 @@ const gameBoard = (function () {
         //for each possible winning row...
         potentialThreesInARow.forEach(row => {
             //check each cell of that row
-            if (row.every(ele => ele == player.symbol)) console.log(`${player.name} wins!`);
+            if (row.every(ele => ele == player.symbol)) {
+                console.log(`${player.name} wins!`);
+                player.score++;
+                console.log(player1.name, player1.score, player2.name, player2.score);
+                resetBoard()
+            }
         });
         
     }
@@ -79,17 +90,13 @@ const displayController = (function () {
     
 })();
 
-function player (name, symbol, isWinner = false, isTurn = false) {
-    return { name, symbol, isWinner, isTurn};
+function player (name, symbol, isWinner = false, isTurn = false, score = 0) {
+    return { name, symbol, isWinner, isTurn, score};
 } 
+
+function 
 
 const player1 = player("John", "X");
 const player2 = player("Jane", "O");
-
 player1.isTurn = true;
-console.log(player1);
-console.log(player2);
-gameBoard.changeBoard(player1, 0);
-gameBoard.changeBoard(player2, 0);
-gameBoard.changeBoard(player1, 2);
-gameBoard.changeBoard(player2, 6);
+
