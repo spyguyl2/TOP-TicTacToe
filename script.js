@@ -9,11 +9,11 @@ const gameBoard = (() => {
             board[n][i] = "empty";
         }
     }
-//evaluating false despite only containing "empty"
+
     const hasEmpty = () => {
         return board.some((row) => {
-            row.some(element => {
-                element == "empty";
+            return row.some(element => {
+                return element == "empty";
             });
         });
     }
