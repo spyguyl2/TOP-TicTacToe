@@ -3,10 +3,12 @@ const gameBoard = (() => {
     const row = 3;
     const col = 3;
     
-    for (let n = 0; n < row; n++) {
-        board[n] = [];
-        for (let i = 0; i < col; i++) {
-            board[n][i] = "empty";
+    const newBoard = () => {
+        for (let n = 0; n < row; n++) {
+            board[n] = [];
+            for (let i = 0; i < col; i++) {
+                board[n][i] = "empty";
+            }
         }
     }
 
@@ -36,7 +38,7 @@ const gameBoard = (() => {
     const getBoard = () => {
         return board;
     }
-
+    
     const checkRowsForWinner = (player) => {
         const topRow = getWinningRow("00", "01", "02");
         const midRow = getWinningRow("10", "11", "12");
@@ -68,12 +70,13 @@ const gameBoard = (() => {
         getBoard();
     }
 
-    return{getBoard, hasEmpty, checkRowsForWinner, setBoard, displayBoard};
+    return{getBoard, hasEmpty, checkRowsForWinner, setBoard, displayBoard, newBoard};
 })();
 
 const gameController = (() => {
 
     const newGame = () => {
+        gameBoard.newBoard();
         player1 = createPlayer("Damon", "X");
         player2 = createPlayer("Bob", "O");
         player1.isTurn = true;
