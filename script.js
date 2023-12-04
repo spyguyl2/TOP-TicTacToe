@@ -10,6 +10,7 @@ const gameBoard = (() => {
                 board[n][i] = "empty";
             }
         }
+        displayBoard();
     }
 
     const getCell = (num) => {
@@ -80,23 +81,32 @@ const gameController = (() => {
         player1 = createPlayer("Damon", "X");
         player2 = createPlayer("Bob", "O");
         player1.isTurn = true;
-        gameBoard.displayBoard();
         playRound();
     }
 
     const playRound = () => {
         //loop through player turns until someone wins or there's no empty spaces left. declare winner/tie and update score accordingly
         let hasWon = false;
+        /*
         while(gameBoard.hasEmpty() && !hasWon) {
             requestSelection(player1);
             gameBoard.displayBoard();
             hasWon = checkForWinner(player1);
-            if (hasWon)break;
+            if (hasWon || !gameBoard.hasEmpty())break;
             requestSelection(player2);
             gameBoard.displayBoard();
             hasWon = checkForWinner(player2);
-            if (hasWon)break;
+            if (hasWon || !gameBoard.hasEmpty())break;
         }
+        if (hasWon) console.log(`New round. ${player1.name}: ${player1.score}   ${player2.name}: ${player2.score}`);
+        else console.log("It's a tie! New round.");
+        gameBoard.newBoard();
+        playRound();
+        */
+    }
+
+    const takeTurn = () => {
+        return [player1.isTurn, player2.isTurn] = [player2.isTurn, player1.isTurn];
     }
 
     const checkForWinner = (player) => {
@@ -122,7 +132,7 @@ const gameController = (() => {
     }
 
 
-    return {newGame, playRound, requestSelection}
+    return {newGame, playRound, requestSelection, takeTurn}
 })();
 
 function createPlayer (name, symbol, isTurn = false, score = 0) {
@@ -131,7 +141,7 @@ function createPlayer (name, symbol, isTurn = false, score = 0) {
 }
 
 const displayController = (() => {
-    //Use AFTER the game works in the console.
+    
 })();
 
 gameController.newGame();
