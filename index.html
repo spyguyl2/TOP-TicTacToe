@@ -8,8 +8,36 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="gameBoard">
-        
+    <h1>Tic Tac Toe!</h1>
+    <p id="banner">Enter your player names and click start to play!</p>
+    <div id="scoreBoard">
+        <div class="playerBoard">
+            <div class="inputLabelBox">
+                <label for="player1">Player1</label>
+                <input type="text" name="player1" id="player1Name">
+            </div>
+            <p id="player1Score">0</p>
+        </div>
+        <div class="playerBoard">
+            <div class="inputLabelBox">
+                <label for="player2">Player2</label>
+                <input type="text" name="player2" id="player2Name">
+            </div>
+            <p id="player2Score">0</p>
+        </div>
     </div>
+    <div class="gameBoard">
+        <!--<button id="1"></button>
+        <button id="2"></button>
+        <button id="3"></button>
+        <button id="4"></button>
+        <button id="5"></button>
+        <button id="6"></button>
+        <button id="7"></button>
+        <button id="8"></button>
+        <button id="9"></button>
+        -->
+    </div>
+    <button id="btnStart">Start Game</button>
 </body>
 </html>

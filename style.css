@@ -5,10 +5,17 @@ html {
 
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     background-color: black;
+}
+
+#scoreBoard {
+    display: flex;
+    justify-content: space-evenly;
+    width: 75%;
 }
 
 .gameBoard {
@@ -17,4 +24,29 @@ body {
     background-color: blue;
     height: 500px;
     width: 500px;
+}
+
+.playerBoard {
+    display: flex;
+    width: 20%;
+    justify-content: space-evenly;
+}
+
+.inputLabelBox {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    margin: 5px;
+    font-size: 100px;
+}
+
+#btnStart {
+    margin-top: 20px;
+    font-size: 50px;
+}
+
+h1, p, label {
+    color: white;
 }
