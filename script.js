@@ -105,6 +105,10 @@ const gameController = (() => {
         */
     }
 
+    const playerWithIsTurn = () => {
+
+    }
+
     const takeTurn = () => {
         return [player1.isTurn, player2.isTurn] = [player2.isTurn, player1.isTurn];
     }
@@ -132,37 +136,82 @@ const gameController = (() => {
     }
 
 
-    return {newGame, playRound, requestSelection, takeTurn}
+    return {newGame, playRound, requestSelection, takeTurn, playerWithIsTurn}
 })();
 
 function createPlayer (name, symbol, isTurn = false, score = 0) {
-    
-     return {name, symbol, isTurn, score};
+    return {name, symbol, isTurn, score};
 }
 
 const displayController = (() => {
     const renderBoard = () => {
         let id = 1;
-        board = gameBoard.getBoard();
+        let boardContainer = document.querySelector(".gameBoard");
+        let board = gameBoard.getBoard();
         board.forEach((row) => {
             row.forEach((cell) => {
                 button = document.createElement("button");
                 button.setAttribute("id", id.toString());
+                button.classList.toggle("disabled");
                 button.textContent = cell;
-                button.addEventListener('click', () => {
-                    if (button.textContent == "") {
-
-                    }
-                    //else warn that they can't go there. the space is already taken.
-                });
                 id++
+                boardContainer.appendChild(button);
             });
         });
+
+        boardContainer.addEventListener("click", (event) => {
+            let button = event.target.closest("button");
+            if(!button) return;
+            let player;
+            if (player1.isTurn) player = player1;
+            if (player2.isTurn) player = player2;
+            if (button.textContent == "") {
+                button.textContent = player.symbol;
+                gameController.takeTurn();
+            }
+            else announcer(`That space is already taken, ${player.name}. Try again.`);
+        });
+
+    }
+    //take input field, set it as that players name, remove input field, add <p> with that player name.
+    //and return the name?
+    const setPlayerName = (player1, player2) => {
+        player1TB = document.getElementById("player1Name");
+        player2TB = document.getElementById("player2Name");
+
+        if (player1TB.textContent == "") player1.name = "Jeff";
+        else player1.name = player1TB.textContent;
+        if ( player2TB.textContent == "") player2.name = "Bob";
+        else player2.name = player2TB.textContent;
+
+        player1TB.remove();
+        player2TB.remove();
+        
+        pName1 = document.createElement("p");
+        pName1.textContent = player1.name;
+        document.getElementById("inputLabelBoxPlayer1").appendChild(pName1);
+
+        pName2 = document.createElement("p");
+        pName2.textContent = player2.name;
+        document.getElementById("inputLabelBoxPlayer2").appendChild(pName2);
+
+    }
+
+    const updateScoreBoard = () => {
+        score1 = document.getElementById("player1Score");
+        score2 = document.getElementById("player2Score");
+
+        score1.textContent = player1.score.toString();
+        score2.textContent = player2.score.toString();
     }
 
     const announcer = (announcement) => {
         banner = document.querySelector("#banner");
         banner.textContent = announcement;
+    }
+
+    const getStartButton = () => { 
+        return document.getElementById("btnStart"); 
     }
 
     return {renderBoard, announcer};
