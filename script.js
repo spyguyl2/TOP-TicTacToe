@@ -5,7 +5,9 @@ const gameBoard = (() => {
         for (let i = 0; i < 9; i++) {
             board[i] = "";
         }
-        displayController.renderBoard();
+        displayController.wipeBoard();
+        if(player2.isTurn) player2.isTurn = false;
+        player1.isTurn = true;
     }
 
     const getWinningRow = (x, y, z) => {
@@ -14,10 +16,8 @@ const gameBoard = (() => {
     }
 
     const isBlank = () => {
-        return board.some((row) => {
-            return row.some(element => {
-                return element == "";
-            });
+        return board.some((element) => {
+            return element == "";
         });
     }
 
@@ -48,9 +48,8 @@ const gameBoard = (() => {
     }
 
     const setBoard = (player, id) => {
-        
-        board[x][y] = player.symbol;
-        displayController.renderBoard();
+        //REMINDER! ***cell IDs start at 1, not 0***
+        board[id - 1] = player.symbol;
     }
 
     return{getBoard, isBlank, checkRowsForWinner, setBoard, newBoard};
@@ -59,35 +58,13 @@ const gameBoard = (() => {
 const gameController = (() => {
 
     const newGame = () => {
-        gameBoard.newBoard();
         player1 = createPlayer("", "X");
         player2 = createPlayer("", "O");
+        gameBoard.newBoard();
+        displayController.renderBoard();
         player1.isTurn = true;
         displayController.updateScoreBoard();
         displayController.enableStartButton();
-    }
-
-    const playRound = () => {
-        //loop through player turns until someone wins or there's no empty spaces left. declare winner/tie and update score accordingly
-        let hasWon = false;
-        
-        while(gameBoard.isBlank() && !hasWon) {
-            hasWon = checkForWinner(player1);
-            if (hasWon || !gameBoard.isBlank())break;
-
-
-            hasWon = checkForWinner(player2);
-            if (hasWon || !gameBoard.isBlank())break;
-        }
-        if (hasWon) console.log(`New round. ${player1.name}: ${player1.score}   ${player2.name}: ${player2.score}`);
-        else console.log("It's a tie! New round.");
-        gameBoard.newBoard();
-        playRound();
-        
-    }
-
-    const playerWithIsTurn = () => {
-
     }
 
     const takeTurn = () => {
@@ -96,28 +73,19 @@ const gameController = (() => {
 
     const checkForWinner = (player) => {
         if (gameBoard.checkRowsForWinner(player)) {
-            console.log(`${player.name} wins!`);
+            displayController.announcer(`${player.name} wins!`);
             player.score++;
-            return true;
+            displayController.updateScoreBoard();
+            gameBoard.newBoard();
         }
-        return false;
+        else if (!gameBoard.isBlank()) {
+            displayController.announcer("It's a tie!");
+            gameBoard.newBoard();
+        }
+        else return;
     }
 
-    const requestSelection = (player) => {
-        let isLegalMove = false;
-        while(!isLegalMove) {
-            let choice = prompt(`Select a cell, ${player.name}.`);
-            const array = choice.split('');
-            x = parseInt(array[0]);
-            y = parseInt(array[1]);
-            if (gameBoard.getBoard()[x][y] == "") isLegalMove = true;
-            else console.log("That space is already taken. Try again.")
-        }
-        gameBoard.setBoard(player, x, y);
-    }
-
-
-    return {newGame, playRound, requestSelection, takeTurn, playerWithIsTurn}
+    return {newGame, takeTurn, checkForWinner}
 })();
 
 function createPlayer (name, symbol, isTurn = false, score = 0) {
@@ -148,14 +116,22 @@ const displayController = (() => {
             if (player2.isTurn) player = player2;
             if (button.textContent == "") {
                 button.textContent = player.symbol;
-                //use id for board update
-                gameController.takeTurn();
-                
+                gameBoard.setBoard(player, id);
+                gameController.checkForWinner(player);
+                gameController.takeTurn();                
             }
             else announcer(`That space is already taken, ${player.name}. Try again.`);
         });
 
     }
+
+    const wipeBoard = () => {
+        cells = document.querySelectorAll("button");
+        cells.forEach((cell) => {
+            if (cell.id != "btnStart") cell.textContent = "";
+        });
+    }
+
     //take input field, set it as that players name, remove input field, add <p> with that player name.
     //and return the name?
     const setPlayerName = (player1, player2) => {
@@ -196,10 +172,15 @@ const displayController = (() => {
         button = document.getElementById("btnStart"); 
         button.addEventListener("click", () => {
             setPlayerName(player1, player2);
+            document.querySelectorAll("button").forEach((button) => {
+                if (button.id != "btnStart")
+                button.classList.toggle("disabled");
+            });
+            button.remove();
         });
     }
 
-    return {renderBoard, announcer, enableStartButton, updateScoreBoard, setPlayerName};
+    return {renderBoard, announcer, enableStartButton, updateScoreBoard, setPlayerName, wipeBoard};
 })();
 
 gameController.newGame();
